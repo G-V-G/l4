@@ -1,0 +1,9 @@
+print tenet
+print
+error string
+
+print two words
+reverse bicycle
+print freedom
+reverse
+reverse two words
