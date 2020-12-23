@@ -23,4 +23,6 @@ func main() {
 		panic(err)
 	}
 	eventLoop.AwaitFinish()
+	// Doesn't execute after finish
+	eventLoop.Post(parse("print never_run"))
 }
