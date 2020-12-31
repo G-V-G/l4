@@ -22,19 +22,23 @@ func (q *Queue) Push(cmd Command) {
 }
 
 // Pull pops command from the stack
-func (q *Queue) Pull() Command {
-	q.Lock()
-	defer q.Unlock()
+func (q *Queue) Pull(stopRequest *bool) Command {
+  q.Lock()
+  defer q.Unlock()
 
-	if len(q.Commands) == 0 {
-		q.onEmptyReceive = true
-		q.Unlock()
-		<- q.onReceiveEmptyChan
-		q.Lock()
-	}
+  if *stopRequest && len(q.Commands) == 0 {
+    return nil
+  }
 
-	cmd := q.Commands[0]
-	q.Commands[0] = nil
-	q.Commands = q.Commands[1:]
-	return cmd
+  if len(q.Commands) == 0 {
+    q.onEmptyReceive = true
+    q.Unlock()
+    <- q.onReceiveEmptyChan
+    q.Lock()
+  }
+
+  cmd := q.Commands[0]
+  q.Commands[0] = nil
+  q.Commands = q.Commands[1:]
+  return cmd
 }
